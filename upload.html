@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Memory Between Us – 記憶上傳</title>
+
+  <!-- CSS 分開 -->
+  <link rel="stylesheet" href="upload.css">
+</head>
+
+<body>
+  <!-- 一開始先給 step1，方便控制 -->
+  <div class="mbu-frame step1">
+    <!-- 四角形狀 -->
+    <span class="corner corner-tl"></span>
+    <span class="corner corner-tr"></span>
+    <span class="corner corner-bl"></span>
+    <span class="corner corner-br"></span>
+
+    <!-- 整個 flow form -->
+    <form id="f" class="flow">
+
+      <!-- ✅ flow 容器的兩個方形背景 -->
+      <div style=" box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0);" class="flow-bg flow-bg-a"></div>
+      <div style=" box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0);" class="flow-bg flow-bg-b"></div>
+
+      <!-- STEP 1 -->
+      <section class="card step active" data-step="1">
+        <div class="card-inner">
+          <h1 class="q-title">2025年<br>最快樂的一天</h1>
+
+          <button type="button" class="pill-btn" id="btnPickPhoto">
+            <span class="pill-label">上傳照片</span>
+          </button>
+
+          <input type="file" id="fileInput" name="file" accept="image/*" hidden>
+        </div>
+      </section>
+
+  
+
+      <!-- STEP 2 -->
+      <!-- STEP 2 -->
+   <!-- STEP 2 -->
+      <section class="card step" data-step="2">
+       <div class="card-inner">
+         <p class="q-title">這一天，<br>為什麼讓你最快樂？</p>
+
+          <div class="input-row">
+            <div class="input-shell">
+              <input id="caption" name="caption" class="text-chip" type="text" placeholder="輸入文字...">
+            </div>
+
+            <button type="button" class="icon-btn" id="btnToPreview">
+              <svg class="icon-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <polyline points="14 7 21 12 14 17"></polyline>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- ⭐⭐ 字數限制提示（放在 card 的下面 → 就會顯示在你紅框的地方） ⭐⭐ -->
+        <p id="captionLimitTip" class="limit-tip" style="display:none;">
+        字數已達上限
+        </p>
+      </section>
+
+
+
+      <!-- STEP 3 -->
+      <section class="card step" data-step="3">
+        <div class="card-inner">
+          <p class="preview-title">最快樂的這天</p>
+          <p class="preview-caption" id="previewCaption"></p>
+
+          <div class="preview-photo-wrap">
+            <img id="previewImage" alt="">
+          </div>
+        </div>
+      </section>
+
+      <!-- ⭐ 按鈕搬到 card 外面，但還是在 form 裡 ⭐ -->
+      <button style=" box-shadow: 0 0 10px 5px rgba(255, 255, 255, 0);" type="button" class="pill-btn pill-btn-upload" id="btnUpload">
+        <div class="blur-bg"></div>
+        <span class="pill-label">上傳記憶</span>
+      </button>
+
+      <!-- STEP 4 -->
+      <section class="card step" data-step="4">
+        <div class="card-inner center">
+          <p class="status-big" id="uploadStatus">上傳中⋯</p>
+        </div>
+      </section>
+
+    </form>
+
+    <!-- ⬇️ ⬇️ ⬇️ 加在 flow（form）裡，但放在 card 外面 -->
+      <p class="legal">
+        影像僅用於本作品，不作其他用途或不當使用。
+      </p>
+      
+  </div>
+
+  <script src="upload.js"></script>
+</body>
+</html>

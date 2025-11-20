@@ -1,0 +1,657 @@
+@font-face {
+  font-family: "GenYoGothic";
+  src: url("../fonts/GenYoGothic2TW-L.otf") format("opentype");
+  font-weight: 300;
+  font-style: normal;
+}
+
+/* ★ 新增：讓 400 也用 N.otf，之後文字全部用 400 就會吃這個檔 */
+@font-face {
+  font-family: "GenYoGothic";
+  src: url("../fonts/GenYoGothic2TW-N.otf") format("opentype");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "GenYoGothic";
+  src: url("../fonts/GenYoGothic2TW-N.otf") format("opentype");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "GenYoGothic";
+  src: url("../fonts/GenYoGothic2TW-R.otf") format("opentype");
+  font-weight: 700;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: 100dvh;
+}
+
+/* ---- 基本設定：用 rem + 變數 ---- */
+:root {
+  font-size: 16px;                /* 之後字體都用 rem */
+  --blue-bg:   #b0d3ff;
+  --blue-main: #2563c6;
+  --card-bg:   rgb(239, 248, 255);
+  --card-w: min(65vw, 20rem);   /* 卡片寬度：手機 88vw，上限 26rem */
+  --card-ratio: 1.042;          /* 794 / 762 ≈ 1.042，高度 = 寬度 * 1.042 */
+  --card-h: min(
+    calc(var(--card-w) * var(--card-ratio)),
+    calc(100dvh - 5rem)
+  );
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "GenYoGothic", sans-serif;
+  background: #ffffff;
+  color: var(--blue-main);
+  letter-spacing: 0.04em
+}
+
+
+
+/* ---- 整個手機畫面的外框 ---- */
+/* RWD 重點：用 vh/vw + flex 置中，不用絕對座標 */
+/* 一整個「手機畫面」的範圍 */
+/* ---- 整個手機畫面的外框 ---- */
+.mbu-frame {
+  position: relative;
+
+  width: 100vw;
+  height: 100dvh;
+
+  /* ⭐ 用 flex 把裡面的 flow 置中 */
+  display: flex;
+  align-items: center;      /* 垂直置中 */
+  justify-content: center;  /* 水平置中 */
+
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
+/* 藍色模糊長方形 */
+.mbu-frame::before {
+  content: "";
+  position: absolute;
+
+  top: 1.5rem;
+  bottom: 1rem;
+  left: 1rem;
+  right: 1rem;
+
+  background: rgba(156, 196, 255, 0.8);
+  border-radius: 3rem;
+  filter: blur(25px);
+  opacity: 0.9;
+  z-index: 0;
+  pointer-events: none;
+}
+
+
+/* ---- 四個角的裝飾（我關掉了） ---- */
+.corner {
+  opacity: 0;
+  pointer-events: none; /* 避免擋住點擊 */
+  position: absolute;
+  /* 不設定寬高、背景、filter */
+}
+
+/* 正方形 */
+.corner-tl {
+  top: 2rem;
+  left: 2rem;
+
+  width: 1.1rem;
+  height: 1.1rem;
+  background: #4b8dff;
+  filter: blur(2px);
+  border-radius: 0.25rem;
+}
+
+/* 圓形 */
+.corner-tr {
+  top: 2rem;
+  right: 2rem;
+
+  width: 1.1rem;
+  height: 1.1rem;
+  background: #4b8dff;
+  filter: blur(2px);
+  border-radius: 999px;
+}
+
+/* 三角形 */
+.corner-bl {
+  position: absolute;
+  bottom: 2rem;
+  left: 2rem;
+
+  width: 0;
+  height: 0;
+
+  border-left: 0.65rem solid transparent;  /* 一半寬 */
+  border-right: 0.65rem solid transparent; /* 一半寬 */
+  border-bottom: 1.1rem solid #4b8dff;     /* 高度（顏色） */
+
+  filter: blur(2px); /* 加模糊請之後再說 */
+}
+
+
+/* 菱形 */
+.corner-br {
+  bottom: 2rem;
+  right: 2rem;
+
+  width: 1.1rem;
+  height: 1.1rem;
+  background: #4b8dff;
+  filter: blur(2px);
+  border-radius: 0.25rem;
+  transform: rotate(45deg);
+}
+
+
+
+/* ---- form 容器 ---- */
+.flow {
+  width: var(--card-w);         /* 固定 RWD 寬度 */
+  height: var(--card-h);        /* 依比例算出來的高度 */
+  position: relative;           /* 給 .flow-bg / .card 做 absolute 定位 */
+  margin: 0 auto;               /* 水平置中 */
+}
+
+
+/* 共同：兩個背景方形的基本版 */
+.flow-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border-radius: 2rem;
+  pointer-events: none;
+}
+
+/* 前景方框：有一點玻璃＋邊框 */
+.flow-bg-a {
+  background: rgba(255, 255, 255, 0.4);         /* 半透明白 */
+  border: 1px solid rgba(255, 255, 255, 0.4);  /* 細白邊 */
+  opacity: 1; 
+  z-index: 0;
+
+}
+
+/* 後面光暈：偏藍的模糊 */
+.flow-bg-b {
+  background: rgba(255, 255, 255, 0.5);  
+  filter: blur(8px);  
+  opacity: 1;                          /* 固定不動 */
+  z-index: 0;
+
+   /* ⭐ 之後 step3 → step4 要慢慢淡掉 */
+  transition:
+    opacity 5s ease,
+    filter 5s ease;
+
+}
+
+
+/* 卡片本體：中間那塊真正的白色面板 */
+.card {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 1.5rem 1.5rem 1.5rem;
+  border-radius: 2rem;
+
+  background: transparent;
+  z-index: 1;
+
+  /* ⭐ 新：用透明度 + 位移控制進出場 */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s ease,
+    filter 0.45s ease;
+}
+
+/* 顯示中的卡片：淡入＋往上回到原位 */
+.card.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.card-inner {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;   /* 預設從上排 */
+}
+
+
+.card-inner.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+
+/* ---- STEP1-4文字設定 ---- */
+/* ---- STEP1 ---- */
+.q-title {
+  font-size: 1.4rem;
+  line-height: 1.5;
+  font-weight: 400; /* ★ 改成 400 */
+  margin: 0;
+}
+
+/* ---- STEP2 ---- */
+.card[data-step="2"] .q-title {
+  font-size: 1.2rem;
+}
+
+/* Step3 的 preview-title：字體、字重、字級 */
+.card[data-step="3"] .preview-title {
+  font-family: "GenYoGothic", sans-serif;
+  font-weight: 400;
+  font-size: 1.3rem;    /* ⭐ 加在這裡 */
+}
+
+/* Step3 的 preview-caption：只要字體與字重 */
+.card[data-step="3"] .preview-caption {
+  font-family: "GenYoGothic", sans-serif;
+  font-weight: 400;
+  font-size: 0.8rem;
+}
+
+/* ⭐ Step4 卡片：縮小左右 padding，給文字多一點空間 */
+.card[data-step="4"] {
+  padding: 1rem 0.5rem;   /* 左右只留 0.5rem 就好 */
+  transform: translateY(0);
+}
+
+
+
+
+/* ---- STEP1：上傳照片 ---- */
+/* ---- 2025年 ---- */
+/* ---- 上傳照片bnt ---- */
+/* 共用按鈕樣式（預設：Step1 的「上傳照片」用這個） */
+.pill-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0.5rem 1.2rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+
+  background: rgba(255, 255, 255, 0.5);
+  font-size: 0.95rem;
+  cursor: pointer;
+  color:#314460;
+
+  align-self: center;
+  margin-top: auto;
+  margin-bottom: 0;
+
+  z-index: 1;
+
+  /* 原本的光暈 */
+  box-shadow: 0 0 24px rgba(169, 205, 255, 0.5);
+}
+
+/* 文字放最上層（兩顆按鈕都可以用） */
+.pill-btn .pill-label {
+  position: relative;
+  z-index: 1;
+}
+
+/* ⭐ Step3 專用：讓這顆按鈕本體變透明，改用 blur-bg 畫出糊掉的膠囊 */
+.pill-btn-upload {
+  padding: 0.6rem 1.5rem;  /* 可以比 Step1 寬一點，看起來像你那張圖 */
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  z-index: 10;             /* 壓在上面 */
+}
+
+/* ⭐ 這塊才是「真的看到的那顆按鈕」，整顆被 blur */
+.pill-btn-upload .blur-bg {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.6);
+  filter: blur(5px);      /* 想更糊就加大：16px、18px 都可以試 */
+  z-index: 0;
+}
+
+
+
+/* 預設先把這顆 upload 按鈕藏起來 */
+#btnUpload {
+  display: none;
+  opacity: 1;
+  filter: none;
+
+  z-index: 40; 
+
+  transition:
+    opacity 5s ease,
+    filter 5s ease;
+}
+
+/* 當 Step3 那張 card 有 active 時，才顯示按鈕（這條你原本就有） */
+.card[data-step="3"].active ~ #btnUpload {
+  display: block;
+}
+
+
+
+/* STEP1 底部法律文字 */
+.legal {
+  margin-top: 1.8rem;
+  font-size: 0.75rem;
+  color: rgba(37, 99, 198, 0.9);
+  z-index: 5;
+  text-align: center;
+}
+
+
+/* ---- STEP2：輸入文字列 ---- */
+.input-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: 1.2rem;
+}
+
+/* ⭐ 新增：包住 input 的白色 pill 外殼 */
+.input-shell {
+  flex: 1;
+  height: 2.1rem;                         /* 和按鈕一樣高 */
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.60);  /* 白色半透明 */
+  padding: 0 0.6rem;
+  display: flex;
+  align-items: center;                    /* 讓輸入文字垂直置中 */
+}
+
+/* 讓 flex 裡的 input 可以被壓縮，不會把按鈕擠出去 */
+.input-row {
+  width: 100%;   /* 吃滿卡片內容寬度 */
+}
+
+.input-shell {
+  flex: 1 1 auto;
+  min-width: 0;          /* ⭐ 關鍵：允許比內容還窄 */
+}
+
+.text-chip {
+  flex: 1;
+  min-width: 0;          /* 再保險一次 */
+}
+
+
+
+/* 真正的 input */
+.text-chip {
+  flex: 1;
+  border: none;
+  background: transparent;                /* 外殼負責背景 */
+  outline: none;
+  font-size: 0.9rem;
+  line-height: 1.2;
+  color: #83B7FF;
+}
+
+.text-chip::placeholder {
+  color: rgba(37, 99, 198, 0.5);
+}
+
+/* 送出箭頭按鈕 */
+.icon-btn {
+  flex-shrink: 0;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 999px;
+  border: none;
+  background: rgba(255, 255, 255, 0.60);
+  color: #83B7FF;
+  font-size: 1.1rem;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-arrow {
+  width: 1.2rem;
+  height: 1.2rem;
+  color: #83B7FF; 
+}
+
+/* ⭐ 只調整箭頭，不影響按鈕本體 */
+.icon-btn span {
+  transform: translateY(-1px);
+  display: inline-block;       /* 必須存在，transform 才有效 */
+  line-height: 1;              /* 基準變乾淨 */
+}
+
+
+/* ---- STEP3：照片預覽區 ---- */
+
+/* ---- 標題 ---- */
+.preview-title {
+  font-size: 1.2rem;
+  margin: 0 0 0.7rem;
+}
+
+/* ---- 內文 ---- */
+.preview-caption {
+  font-size: 0.95rem;
+  margin: 0 0 1.2rem;
+  color:#83B7FF;
+  font-weight: 400; /* ★ 統一 400 */
+}
+/* ---- 內文冒號 ---- */
+.preview-caption::before {
+  content: "：";   /* 全形冒號 */
+  margin-right: 0.1rem;   /* 冒號與文字的距離 */
+  color: inherit;          /* 跟著原本的顏色 */
+}
+
+/* 照片外殼 */
+.preview-photo-wrap {
+  width: 100%;
+  border-radius: 1.2rem;
+  overflow: hidden;
+  background: #9ebcf3;
+  box-shadow: 0 1rem 2.2rem rgba(255, 255, 255, 0.6);
+
+  aspect-ratio: 4 / 3;      /* ⭐ 給它一個固定比例，看起來才漂亮 */
+}
+
+
+/* 裡面的照片照舊吃滿外殼就好 */
+.preview-photo-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;        /* ⭐ 填滿外殼，不留白（常用） */
+  object-position: center;  /* ⭐ 圖片中心對齊 */
+}
+
+/* ⭐ 專門給 Step3 的這顆 upload 按鈕用 */
+#btnUpload {
+  position: absolute;
+  left: 50%;
+  bottom: -4rem;              /* 按鈕離卡片底部的距離，可以自己調 */
+  transform: translateX(-50%); /* 水平置中 */
+  display: none;               /* 預設不顯示 */
+  z-index: 10;                 /* 壓在卡片上面 */
+}
+
+/* 當 Step3 那張 card 是 active 時，才顯示 upload 按鈕 */
+.card[data-step="3"].active ~ #btnUpload {
+  display: block;
+}
+
+
+/* ---- STEP4：完成訊息 ---- */
+.status-big {
+  font-size: 0.8rem;
+  text-align: center;
+  line-height: 1.6;
+  z-index: 2;  
+}
+
+
+ /* 影像提示 */
+.legal {
+  position: absolute;
+  bottom: 1rem;         /* 距離底部的距離，你可以調整 */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;             /* 不會太長、好排版 */
+  text-align: center;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: rgba(37, 99, 198, 0.254);
+
+  z-index: 20;            /* 高於 flow-bg / card 背景 */
+  pointer-events: none;   /* 不擋按鈕點擊 */
+}
+
+.limit-tip {
+  font-size: 0.75rem;
+  color: #F06F83;
+  margin: 0.35rem 0 0;
+  text-align: right;
+  letter-spacing: 0.04em;
+}
+
+.card[data-step="2"] .limit-tip {
+  text-align: center;
+  margin-top: 2.5rem;    /* 與卡片保持距離 */
+  margin-bottom: 0;
+  font-size: 0.78rem;
+  color: #F06F83;
+  letter-spacing: 0.03em;
+}
+
+
+
+
+/* ------- 讓 Step1、Step2 的內容上下平均分配，不會溢出 ------- */
+
+/* Step1：標題在上、按鈕在下，中間自動分配空間 */
+.card[data-step="1"] .card-inner {
+  justify-content: space-between;
+}
+
+/* Step1 的按鈕就不需要 margin-top:auto 了 */
+.card[data-step="1"] .pill-btn {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* Step2：標題在上，輸入列在下，同樣 space-between */
+.card[data-step="2"] .card-inner {
+  justify-content: space-between;
+  gap: 1rem;        /* 標題與輸入列之間的距離 */
+}
+
+
+
+
+
+/* ==== 背景四階段透明度控制（新版） ==== */
+
+/* Step 1：正常（不改，使用原本 opacity） */
+
+/* Step 2：flow-bg-a = 0.4 */
+.mbu-frame.step2 .flow-bg-a {
+  opacity: 0.4;
+}
+
+/* Step 3：flow-bg-a = 0 */
+.mbu-frame.step3 .flow-bg-a {
+  opacity: 0;
+}
+
+/* ⭐ Step 4：讓 Step3 整組（卡片＋flow-bg-b＋按鈕）慢慢模糊＋消失 */
+.mbu-frame.step4 .flow-bg-a {
+  opacity: 0;
+}
+
+.mbu-frame.step4 .flow-bg-b {
+  opacity: 0;
+  filter: blur(16px); /* 想要比較柔可以再調更大 */
+}
+
+/* Step3 的卡片（標題＋照片）慢慢模糊＋淡出 */
+.mbu-frame.step4 .card[data-step="3"] {
+  opacity: 0;
+  filter: blur(6px);
+  pointer-events: none;
+  transition:
+    opacity 5s ease,
+    filter 5s ease;
+}
+
+/* 上傳記憶按鈕也一起模糊＋淡出 */
+.mbu-frame.step4 #btnUpload {
+  opacity: 0;
+  filter: blur(4px);
+  pointer-events: none;
+}
+
+
+/* Step4 狀態文字：淡出／淡入控制 */
+#uploadStatus {
+  opacity: 1;
+  font-weight: 700;
+  font-size: 0.9rem; 
+  white-space: nowrap; 
+  transition: opacity 0.6s ease;
+}
+
+/* 上傳中 → 淡出 */
+#uploadStatus.fade-out {
+  opacity: 0;
+}
+
+/* 換成「已收到你的記憶，它正在出現中。」 → 淡入 */
+#uploadStatus.fade-in {
+  opacity: 1;
+}
+
+
+/* ⭐ Step4 卡片不要有位移，只用透明度淡入 */
+.card[data-step="4"] {
+  transform: translateY(0);
+}
