@@ -56,6 +56,7 @@ const captionInput   = $("#caption");
 const previewCaption = $("#previewCaption");
 const previewImage   = $("#previewImage");
 const uploadStatus   = $("#uploadStatus");
+const previewTitle   = $("#previewTitle");
 
 let hasPhoto = false;
 let uploadAnimationTimer = null;
@@ -96,6 +97,9 @@ fileInput.addEventListener("change", () => {
 
   hasPhoto = true;
 
+  // ⭐ 更新 Step3 標題：顯示日期
+  updatePreviewDate(file);
+
   // 預覽圖片
   const reader = new FileReader();
   reader.onload = e => {
@@ -105,6 +109,7 @@ fileInput.addEventListener("change", () => {
 
   showStep(2);
 });
+
 
 /* --- Step 2: 輸入文字 → 預覽 --- */
 btnToPreview.addEventListener("click", () => {
@@ -269,3 +274,22 @@ captionInput.addEventListener('input', () => {
     captionLimitTip.style.display = 'none';
   }
 });
+
+// ⭐ 把時間戳記轉成「YYYY / MM / DD」字串
+function formatDateFromTimestamp(ts) {
+  const d = new Date(ts);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y} / ${m} / ${day}`;
+}
+
+// ⭐ 更新 Step3 的日期標題
+function updatePreviewDate(file) {
+  // 先暫時用「檔案最後修改時間」當照片日期
+  // 之後如果要用 EXIF，可以在這裡換成讀 EXIF 的邏輯
+  const ts = file.lastModified;
+  const dateStr = formatDateFromTimestamp(ts);
+  previewTitle.textContent = dateStr;
+}
+
