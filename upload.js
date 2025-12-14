@@ -95,6 +95,21 @@ fileInput.addEventListener("change", () => {
   const file = fileInput.files && fileInput.files[0];
   if (!file) return;
 
+  // ✅ MIME 驗證：只允許 jpg / png / heic
+  const allowedTypes = [
+    "image/jpeg",
+    "image/png",
+    "image/heic",
+    "image/heif"
+  ];
+
+  if (!allowedTypes.includes(file.type)) {
+    alert("請上傳 JPG / PNG / HEIC 圖片檔案（不支援 PDF、DOC 等檔案）");
+    fileInput.value = "";   // ⭐ 清掉剛剛選的檔，避免 hasPhoto 變 true
+    hasPhoto = false;
+    return;
+  }
+
   hasPhoto = true;
 
   // ⭐ 更新 Step3 標題：顯示日期
@@ -109,6 +124,7 @@ fileInput.addEventListener("change", () => {
 
   showStep(2);
 });
+
 
 
 /* --- Step 2: 輸入文字 → 預覽 --- */
@@ -187,6 +203,12 @@ btnUpload.addEventListener("click", async () => {
 
     // ⭐ 壓縮原始照片（長邊 1800px，可自行調整）
     const compressedBlob = await compressImage(originalFile, 1800);
+
+    // ✅ 容量上限（3MB）：壓縮後仍太大就直接擋
+    const MAX_BYTES = 25 * 1024 * 1024;
+    if (compressedBlob.size > MAX_BYTES) {
+      throw new Error(`圖片太大（壓縮後仍超過 25MB），目前約 ${(compressedBlob.size / 1024 / 1024).toFixed(2)}MB。請換一張或截圖再上傳。`);
+    }
 
     // ⭐ 建立新 FormData（不能再用 formData(form)，會抓到原始file）
     const formData = new FormData();
