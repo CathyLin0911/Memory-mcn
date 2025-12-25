@@ -423,7 +423,7 @@ body {
   border: none;
   background: transparent;                /* 外殼負責背景 */
   outline: none;
-  font-size: 0.9rem;
+  font-size: 1rem;
   line-height: 1.2;
   color: #83B7FF;
 }
