@@ -190,7 +190,8 @@ btnUpload.addEventListener("click", async () => {
 
     // 2) 等淡出動畫結束（約 0.6 秒），換字再淡入
     uploadTextTimer = setTimeout(() => {
-      uploadStatus.textContent = "已收到你的記憶，它正在出現中。";
+      uploadStatus.innerHTML =
+        "已收到你的記憶！<br>請抬頭看看，它正在出現中。";
       uploadStatus.classList.remove("fade-out");
       uploadStatus.classList.add("fade-in");
     }, 700);
