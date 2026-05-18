@@ -187,11 +187,12 @@ body {
 
 /* 前景方框：有一點玻璃＋邊框 */
 .flow-bg-a {
-  background: rgba(255, 255, 255, 0.4);         /* 半透明白 */
-  border: 1px solid rgba(255, 255, 255, 0.4);  /* 細白邊 */
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   opacity: 1; 
   z-index: 0;
 
+  transition: opacity 5s ease;
 }
 
 /* 後面光暈：偏藍的模糊 */
@@ -207,7 +208,6 @@ body {
     filter 5s ease;
 
 }
-
 
 /* 卡片本體：中間那塊真正的白色面板 */
 .card {
@@ -345,7 +345,7 @@ body {
   border-radius: 999px;
 
   background: rgba(255, 255, 255, 0.6);
-  filter: blur(5px);      /* 想更糊就加大：16px、18px 都可以試 */
+  filter: blur(3px);      /* 想更糊就加大：16px、18px 都可以試 */
   z-index: 0;
 }
 
@@ -600,7 +600,7 @@ body {
 
 /* Step 3：flow-bg-a = 0 */
 .mbu-frame.step3 .flow-bg-a {
-  opacity: 0;
+  opacity: 0.4;
 }
 
 /* ⭐ Step 4：讓 Step3 整組（卡片＋flow-bg-b＋按鈕）慢慢模糊＋消失 */
