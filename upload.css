@@ -345,7 +345,7 @@ body {
   border-radius: 999px;
 
   background: rgba(255, 255, 255, 0.6);
-  filter: blur(3px);      /* 想更糊就加大：16px、18px 都可以試 */
+  filter: blur(1px);      /* 想更糊就加大：16px、18px 都可以試 */
   z-index: 0;
 }
 
